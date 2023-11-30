@@ -1,4 +1,4 @@
-package com.onuraktas.stocktrackingsystem.dto.entity;
+package com.onuraktas.stocktrackingsystem.dto.request;
 
 import lombok.*;
 
@@ -11,12 +11,8 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class CategoryDto {
+public class UpdateSupplierContactInfoRequest {
 
-    private UUID categoryId;
-
-    private String categoryName;
-
-
-
+    private String phone;
+    private String email;
 }

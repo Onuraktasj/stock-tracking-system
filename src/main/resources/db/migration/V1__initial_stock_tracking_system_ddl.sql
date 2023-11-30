@@ -29,6 +29,9 @@ create table if not exists users
 (
     users_id uuid primary key default gen_random_uuid(),
     name varchar(255),
+    phone varchar(255),
+    email varchar(255),
+    status boolean,
     role varchar(255)
 
 );

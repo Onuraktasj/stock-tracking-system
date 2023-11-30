@@ -1,6 +1,5 @@
-package com.onuraktas.stocktrackingsystem.entity;
+package com.onuraktas.stocktrackingsystem.dto.response;
 
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -8,15 +7,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-@Entity
+@EqualsAndHashCode
 @Builder
-public class Supplier {
+public class CreateSupplierResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID supplierId;
 
     private String supplierName;
@@ -25,6 +21,5 @@ public class Supplier {
 
     private String email;
 
-
-
+    private String status;
 }

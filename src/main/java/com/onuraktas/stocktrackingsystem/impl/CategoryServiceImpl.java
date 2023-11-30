@@ -1,13 +1,19 @@
 package com.onuraktas.stocktrackingsystem.impl;
 
+import com.onuraktas.stocktrackingsystem.dto.entity.CategoryDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateCategoryRequest;
+import com.onuraktas.stocktrackingsystem.dto.request.UpdateCategoryNameRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.mapper.CategoryMapper;
 import com.onuraktas.stocktrackingsystem.repository.CategoryRepository;
+import com.onuraktas.stocktrackingsystem.repository.ProductRepository;
 import com.onuraktas.stocktrackingsystem.service.CategoryService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -25,5 +31,45 @@ public class CategoryServiceImpl implements CategoryService {
         createCategoryResponse.setStatus(Status.OK.getStatus());
 
         return createCategoryResponse;
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategory() {
+        return CategoryMapper.toDtoList(this.categoryRepository.findAll());
+    }
+
+    @Override
+    public CategoryDto getCategory(UUID categoryId) {
+        return CategoryMapper.toDto(this.categoryRepository.findById(categoryId).orElseThrow(() -> new NoSuchElementException("Category Not Found")));
+    }
+
+    @Override
+    public ResponseEntity<CategoryDto> updateCategory(UUID categoryId, CategoryDto categoryDto) {
+        if (Objects.isNull(categoryId) || Objects.isNull(categoryDto.getCategoryId()) || !Objects.equals(categoryId,categoryDto.getCategoryId()))
+            return ResponseEntity.badRequest().build();
+
+        Optional<Category> existCategory = categoryRepository.findById(categoryId);
+        if (existCategory.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        final CategoryDto updateCategory = this.save(categoryDto);
+        if (Objects.nonNull(updateCategory))
+            return ResponseEntity.ok(updateCategory);
+
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @Override
+    public CategoryDto updateCategoryName(UUID categoryId, UpdateCategoryNameRequest request) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new NoSuchElementException("Category Not Found"));
+        category.setCategoryName(request.getCategoryName());
+        categoryRepository.save(category);
+        return CategoryMapper.toDto(category);
+    }
+
+    private CategoryDto save (CategoryDto categoryDto){
+        Category category = CategoryMapper.toEntity(categoryDto);
+        category = categoryRepository.save(category);
+        return CategoryMapper.toDto(category);
     }
 }

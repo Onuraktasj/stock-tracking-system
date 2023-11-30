@@ -1,11 +1,9 @@
-package com.onuraktas.stocktrackingsystem.dto.entity;
+package com.onuraktas.stocktrackingsystem.dto.request;
+
 
 import com.onuraktas.stocktrackingsystem.entity.enums.Role;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,9 +12,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class UsersDto {
-
-    private UUID usersId;
+public class CreateUsersRequest {
 
     private String name;
 
@@ -24,6 +20,5 @@ public class UsersDto {
 
     private String email;
 
-    @Enumerated(value = EnumType.STRING)
     private Role role;
 }

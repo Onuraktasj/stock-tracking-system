@@ -1,8 +1,7 @@
-package com.onuraktas.stocktrackingsystem.dto.entity;
+package com.onuraktas.stocktrackingsystem.dto.request;
 
+import com.onuraktas.stocktrackingsystem.entity.Category;
 import lombok.*;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -11,12 +10,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class CategoryDto {
-
-    private UUID categoryId;
+public class UpdateCategoryNameRequest {
 
     private String categoryName;
-
-
-
 }
