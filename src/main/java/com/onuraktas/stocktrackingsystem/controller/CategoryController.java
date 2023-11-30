@@ -1,13 +1,15 @@
 package com.onuraktas.stocktrackingsystem.controller;
 
+import com.onuraktas.stocktrackingsystem.dto.entity.CategoryDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateCategoryRequest;
+import com.onuraktas.stocktrackingsystem.dto.request.UpdateCategoryNameRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
 import com.onuraktas.stocktrackingsystem.service.CategoryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/category")
@@ -22,5 +24,26 @@ public class CategoryController {
     @PostMapping(value = "/create")
     public ResponseEntity<CreateCategoryResponse> createCategory(@RequestBody CreateCategoryRequest categoryRequest){
         return ResponseEntity.ok(categoryService.createCategory(categoryRequest));
+    }
+
+    @GetMapping(value = "/getAll")
+    public ResponseEntity<List<CategoryDto>> getAllCategory(){
+        return ResponseEntity.ok(categoryService.getAllCategory());
+    }
+
+
+    @GetMapping(value = "/{categoryId}")
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable(value = "categoryId") UUID categoryId){
+        return ResponseEntity.ok(categoryService.getCategory(categoryId));
+    }
+
+    @PutMapping(value = "/{categoryId}")
+    public  ResponseEntity<CategoryDto> updateCategory(@PathVariable(value = "categoryId") UUID categoryId, @RequestBody CategoryDto categoryDto){
+        return categoryService.updateCategory(categoryId,categoryDto);
+    }
+
+    @PatchMapping(value = "/{categoryId}")
+    public ResponseEntity<CategoryDto> updateCategoryName(@PathVariable(value = "categoryId")UUID categoryId, @RequestBody UpdateCategoryNameRequest request){
+        return ResponseEntity.ok(categoryService.updateCategoryName(categoryId,request));
     }
 }

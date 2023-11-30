@@ -1,4 +1,4 @@
-package com.onuraktas.stocktrackingsystem.dto.entity;
+package com.onuraktas.stocktrackingsystem.dto.response;
 
 import com.onuraktas.stocktrackingsystem.entity.enums.Role;
 import jakarta.persistence.EnumType;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class UsersDto {
+public class CreateUsersResponse {
 
     private UUID usersId;
 
@@ -26,4 +26,7 @@ public class UsersDto {
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    private String status;
+
 }

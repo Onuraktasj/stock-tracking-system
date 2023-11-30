@@ -32,6 +32,17 @@ public class ProductMapper {
                 .build();
     }
 
+    public static Product toEntity(ProductDto productDto){
+        if (Objects.isNull(productDto))
+            return null;
+        return Product.builder()
+                .productId(productDto.getProductId())
+                .productName(productDto.getProductName())
+                .description(productDto.getDescription())
+                .amount(productDto.getAmount())
+                .build();
+    }
+
     public static Product toEntity(CreateProductRequest createProductRequest){
         if (Objects.isNull(createProductRequest))
             return null;

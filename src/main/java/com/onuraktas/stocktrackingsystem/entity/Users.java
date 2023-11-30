@@ -22,5 +22,11 @@ public class Users {
 
     private String name;
 
+    private String phone;
+
+    private String email;
+
+    private Boolean status;
+
     private Role role;
 }

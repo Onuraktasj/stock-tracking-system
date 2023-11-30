@@ -1,21 +1,24 @@
 package com.onuraktas.stocktrackingsystem.mapper;
 
 import com.onuraktas.stocktrackingsystem.dto.entity.CategoryDto;
+import com.onuraktas.stocktrackingsystem.dto.entity.ProductDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateCategoryRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
+import com.onuraktas.stocktrackingsystem.entity.Product;
 
+import java.util.List;
 import java.util.Objects;
 
 public class CategoryMapper {
 
-    public static Category toDto(CategoryDto categoryDto){
-        if (Objects.isNull(categoryDto))
+    public static CategoryDto toDto(Category category){
+        if (Objects.isNull(category))
             return null;
 
-        return Category.builder()
-                .categoryId(categoryDto.getCategoriesId())
-                .categoryName(categoryDto.getCategoriesName())
+        return CategoryDto.builder()
+                .categoryId(category.getCategoryId())
+                .categoryName(category.getCategoryName())
                 .build();
     }
 
@@ -23,8 +26,16 @@ public class CategoryMapper {
         if (Objects.isNull(category))
             return null;
         return CategoryDto.builder()
-                .categoriesId(category.getCategoryId())
-                .categoriesName(category.getCategoryName())
+                .categoryId(category.getCategoryId())
+                .categoryName(category.getCategoryName())
+                .build();
+    }
+
+    public static Category toEntity(CategoryDto categoryDto){
+        if (Objects.isNull(categoryDto))
+            return null;
+        return Category.builder()
+                .categoryName(categoryDto.getCategoryName())
                 .build();
     }
 
@@ -42,5 +53,11 @@ public class CategoryMapper {
         return CreateCategoryResponse.builder()
                 .categoryId(category.getCategoryId())
                 .build();
+    }
+
+    public static List<CategoryDto> toDtoList(List<Category> categories){
+        return categories.stream().parallel()
+                .map(CategoryMapper::toDto)
+                .toList();
     }
 }

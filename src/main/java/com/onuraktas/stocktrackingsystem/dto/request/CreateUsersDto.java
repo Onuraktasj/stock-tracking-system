@@ -1,4 +1,4 @@
-package com.onuraktas.stocktrackingsystem.dto.entity;
+package com.onuraktas.stocktrackingsystem.dto.request;
 
 import com.onuraktas.stocktrackingsystem.entity.enums.Role;
 import jakarta.persistence.EnumType;
@@ -14,9 +14,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class UsersDto {
-
-    private UUID usersId;
+public class CreateUsersDto {
 
     private String name;
 
