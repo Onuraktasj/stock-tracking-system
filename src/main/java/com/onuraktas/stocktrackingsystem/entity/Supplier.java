@@ -25,6 +25,6 @@ public class Supplier {
 
     private String email;
 
-
-
+    @Builder.Default
+    private Boolean isActive = true;
 }

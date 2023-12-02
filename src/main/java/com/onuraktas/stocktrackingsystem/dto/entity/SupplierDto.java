@@ -21,4 +21,5 @@ public class SupplierDto {
 
     private String email;
 
+    private Boolean isActive;
 }

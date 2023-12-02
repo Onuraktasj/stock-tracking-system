@@ -6,6 +6,7 @@ import com.onuraktas.stocktrackingsystem.dto.request.UpdateSupplierContactInfoRe
 import com.onuraktas.stocktrackingsystem.dto.response.CreateSupplierResponse;
 import com.onuraktas.stocktrackingsystem.entity.Supplier;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
+import com.onuraktas.stocktrackingsystem.exception.SupplierNotFoundException;
 import com.onuraktas.stocktrackingsystem.mapper.SupplierMapper;
 import com.onuraktas.stocktrackingsystem.message.SupplierMessages;
 import com.onuraktas.stocktrackingsystem.repository.SupplierRepository;
@@ -35,33 +36,38 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierDto getSupplier(UUID supplierId) {
-        return SupplierMapper.toDto(this.supplierRepository.findById(supplierId).orElseThrow(()->new NoSuchElementException(SupplierMessages.SUPPLIER_NOT_FOUND)));
+        return SupplierMapper.toDto(this.supplierRepository.findById(supplierId).orElseThrow(()->new SupplierNotFoundException(SupplierMessages.SUPPLIER_NOT_FOUND)));
     }
 
     @Override
     public List<SupplierDto> getAllSupplier() {
-        return SupplierMapper.toDtoList(this.supplierRepository.findAll());
+        List<Supplier> supplierList = this.supplierRepository.findAllByIsActive(Boolean.TRUE);
+
+        if (supplierList.isEmpty())
+            throw new SupplierNotFoundException(SupplierMessages.SUPPLIER_NOT_FOUND);
+
+        return SupplierMapper.toDtoList(supplierList);
     }
 
     @Override
     public ResponseEntity<SupplierDto> updateSupplier(UUID supplierId, SupplierDto supplierDto) {
-        if (!SupplierUtils.validateSupplierRequest(supplierId, supplierDto.getSupplierId()))
+        if (Boolean.FALSE.equals(SupplierUtils.validateSupplierRequest(supplierId, supplierDto.getSupplierId())))
             return ResponseEntity.badRequest().build();
 
-        Optional<Supplier> existSupplier = supplierRepository.findById(supplierId);
-        if (existSupplier.isEmpty())
-            return ResponseEntity.notFound().build();
+        Optional<Supplier> existingSupplier = supplierRepository.findById(supplierId);
+        if (existingSupplier.isEmpty())
+            throw new SupplierNotFoundException(SupplierMessages.SUPPLIER_NOT_FOUND);
 
-        final SupplierDto updateSupplier = this.save(supplierDto);
-        if (Objects.nonNull(updateSupplier))
-            return ResponseEntity.ok(updateSupplier);
+        final SupplierDto updatedSupplier = this.save(supplierDto);
+        if (Objects.nonNull(updatedSupplier))
+            return ResponseEntity.ok(updatedSupplier);
 
         return ResponseEntity.internalServerError().build();
     }
 
     @Override
     public SupplierDto updateSupplierContactInfo(UUID supplierId, UpdateSupplierContactInfoRequest request) {
-        Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(()-> new NoSuchElementException(SupplierMessages.SUPPLIER_NOT_FOUND));
+        Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(()-> new SupplierNotFoundException(SupplierMessages.SUPPLIER_NOT_FOUND));
         supplier.setEmail(request.getEmail());
         supplier.setPhone(request.getPhone());
         supplierRepository.save(supplier);

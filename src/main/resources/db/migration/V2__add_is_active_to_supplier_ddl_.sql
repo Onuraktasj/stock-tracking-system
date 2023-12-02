@@ -1,0 +1,1 @@
+alter table supplier add is_active boolean default true;
