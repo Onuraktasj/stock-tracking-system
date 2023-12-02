@@ -22,4 +22,6 @@ public class CreateSupplierResponse {
     private String email;
 
     private String status;
+
+    private Boolean isActive;
 }

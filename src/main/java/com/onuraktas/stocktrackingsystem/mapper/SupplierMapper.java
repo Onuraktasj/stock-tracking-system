@@ -18,6 +18,7 @@ public class SupplierMapper {
                 .supplierName(supplier.getSupplierName())
                 .phone(supplier.getPhone())
                 .email(supplier.getEmail())
+                .isActive(supplier.getIsActive())
                 .build();
     }
 
@@ -30,6 +31,7 @@ public class SupplierMapper {
                 .supplierName(supplierDto.getSupplierName())
                 .phone(supplierDto.getPhone())
                 .email(supplierDto.getEmail())
+                .isActive(supplierDto.getIsActive())
                 .build();
     }
 
@@ -52,6 +54,7 @@ public class SupplierMapper {
                 .supplierName(supplier.getSupplierName())
                 .phone(supplier.getPhone())
                 .email(supplier.getEmail())
+                .isActive(supplier.getIsActive())
                 .build();
 
     }
