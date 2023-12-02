@@ -7,8 +7,10 @@ import com.onuraktas.stocktrackingsystem.dto.response.CreateUsersResponse;
 import com.onuraktas.stocktrackingsystem.entity.Users;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.mapper.UsersMapper;
+import com.onuraktas.stocktrackingsystem.message.UsersMessages;
 import com.onuraktas.stocktrackingsystem.repository.UsersRepository;
 import com.onuraktas.stocktrackingsystem.service.UsersService;
+import com.onuraktas.stocktrackingsystem.utils.UserUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,17 +34,17 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UsersDto getUsers(UUID usersId) {
-        return UsersMapper.toDto(this.usersRepository.findById(usersId).orElseThrow(()->new NoSuchElementException("User Not Found")));
+        return UsersMapper.toDto(this.usersRepository.findById(usersId).orElseThrow(()->new NoSuchElementException(UsersMessages.USER_NOT_FOUND)));
     }
 
     @Override
     public List<UsersDto> getAllUsers() {
-        return UsersMapper.toDtoList(this.usersRepository.findAll());
+        return UsersMapper.toDtoList(this.usersRepository.findAllByStatus(Boolean.TRUE));
     }
 
     @Override
     public ResponseEntity<UsersDto> updateUsers(UUID usersId, UsersDto usersDto) {
-        if (Objects.isNull(usersId) || Objects.isNull(usersDto.getUsersId()) || !Objects.equals(usersId,usersDto.getUsersId()))
+        if (!UserUtils.validateUsersRequest(usersId, usersDto.getUsersId()))
             return ResponseEntity.badRequest().build();
 
         Optional<Users> existUsers = usersRepository.findById(usersId);
@@ -60,14 +62,14 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UsersDto updateUsersName(UUID usersId,String name) {
-        Users users = usersRepository.findById(usersId).orElseThrow(()-> new NoSuchElementException("Users Not Found"));
+        Users users = usersRepository.findById(usersId).orElseThrow(()-> new NoSuchElementException(UsersMessages.USER_NOT_FOUND));
         users.setName(name);
         return UsersMapper.toDto(usersRepository.save(users));
     }
 
     @Override
     public UsersDto updateUsersContactInfo(UUID usersId, UpdateUsersContactInfoRequest request) {
-        Users users = usersRepository.findById(usersId).orElseThrow(()-> new NoSuchElementException("Users Not Found"));
+        Users users = usersRepository.findById(usersId).orElseThrow(()-> new NoSuchElementException(UsersMessages.USER_NOT_FOUND));
         users.setPhone(request.getPhone());
         users.setEmail(request.getEmail());
         usersRepository.save(users);
@@ -76,7 +78,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void deleteUsers(UUID usersId) {
-        Users users = usersRepository.findById(usersId).orElseThrow(()-> new NoSuchElementException("Users Not Found"));
+        Users users = usersRepository.findById(usersId).orElseThrow(()-> new NoSuchElementException(UsersMessages.USER_NOT_FOUND));
         users.setStatus(false);
         usersRepository.save(users);
     }
@@ -85,6 +87,5 @@ public class UsersServiceImpl implements UsersService {
         Users users = UsersMapper.toEntity(usersDto);
         users = usersRepository.save(users);
         return UsersMapper.toDto(users);
-
     }
 }

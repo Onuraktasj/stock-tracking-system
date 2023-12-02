@@ -7,6 +7,7 @@ import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.mapper.CategoryMapper;
+import com.onuraktas.stocktrackingsystem.message.CategoryMessages;
 import com.onuraktas.stocktrackingsystem.repository.CategoryRepository;
 import com.onuraktas.stocktrackingsystem.repository.ProductRepository;
 import com.onuraktas.stocktrackingsystem.service.CategoryService;
@@ -40,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategory(UUID categoryId) {
-        return CategoryMapper.toDto(this.categoryRepository.findById(categoryId).orElseThrow(() -> new NoSuchElementException("Category Not Found")));
+        return CategoryMapper.toDto(this.categoryRepository.findById(categoryId).orElseThrow(() -> new NoSuchElementException(CategoryMessages.CATEGORY_NOT_FOUND)));
     }
 
     @Override
@@ -61,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto updateCategoryName(UUID categoryId, UpdateCategoryNameRequest request) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new NoSuchElementException("Category Not Found"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new NoSuchElementException(CategoryMessages.CATEGORY_NOT_FOUND));
         category.setCategoryName(request.getCategoryName());
         categoryRepository.save(category);
         return CategoryMapper.toDto(category);
