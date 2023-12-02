@@ -7,6 +7,7 @@ import com.onuraktas.stocktrackingsystem.dto.response.CreateProductResponse;
 import com.onuraktas.stocktrackingsystem.entity.Product;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.mapper.ProductMapper;
+import com.onuraktas.stocktrackingsystem.message.ProductMessages;
 import com.onuraktas.stocktrackingsystem.repository.ProductRepository;
 import com.onuraktas.stocktrackingsystem.service.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProduct(UUID productId) {
-        return ProductMapper.toDto(productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException("Product Not Found")));
+        return ProductMapper.toDto(productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException(ProductMessages.PRODUCT_NOT_FOUND)));
 
     }
 
@@ -63,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProductAmount(UUID productId, UpdateProductAmountRequest request) {
-        Product product = productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException("Product Not Found"));
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException(ProductMessages.PRODUCT_NOT_FOUND));
         product.setAmount(request.getAmount());
         productRepository.save(product);
         return ProductMapper.toDto(productRepository.save(product));
@@ -71,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(UUID productId) {
-        Product existProduct = productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException("Product Not Found"));
+        productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException(ProductMessages.PRODUCT_NOT_FOUND));
         productRepository.deleteById(productId);
 
     }

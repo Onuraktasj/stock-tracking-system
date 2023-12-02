@@ -7,8 +7,10 @@ import com.onuraktas.stocktrackingsystem.dto.response.CreateSupplierResponse;
 import com.onuraktas.stocktrackingsystem.entity.Supplier;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.mapper.SupplierMapper;
+import com.onuraktas.stocktrackingsystem.message.SupplierMessages;
 import com.onuraktas.stocktrackingsystem.repository.SupplierRepository;
 import com.onuraktas.stocktrackingsystem.service.SupplierService;
+import com.onuraktas.stocktrackingsystem.utils.SupplierUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierDto getSupplier(UUID supplierId) {
-        return SupplierMapper.toDto(this.supplierRepository.findById(supplierId).orElseThrow(()->new NoSuchElementException("Supplier Not Found")));
+        return SupplierMapper.toDto(this.supplierRepository.findById(supplierId).orElseThrow(()->new NoSuchElementException(SupplierMessages.SUPPLIER_NOT_FOUND)));
     }
 
     @Override
@@ -43,7 +45,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public ResponseEntity<SupplierDto> updateSupplier(UUID supplierId, SupplierDto supplierDto) {
-        if (Objects.isNull(supplierId) || Objects.isNull(supplierDto.getSupplierId()) || !Objects.equals(supplierId,supplierDto.getSupplierId()))
+        if (!SupplierUtils.validateSupplierRequest(supplierId, supplierDto.getSupplierId()))
             return ResponseEntity.badRequest().build();
 
         Optional<Supplier> existSupplier = supplierRepository.findById(supplierId);
@@ -59,7 +61,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierDto updateSupplierContactInfo(UUID supplierId, UpdateSupplierContactInfoRequest request) {
-        Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(()-> new NoSuchElementException("Supplier Not Found"));
+        Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(()-> new NoSuchElementException(SupplierMessages.SUPPLIER_NOT_FOUND));
         supplier.setEmail(request.getEmail());
         supplier.setPhone(request.getPhone());
         supplierRepository.save(supplier);
