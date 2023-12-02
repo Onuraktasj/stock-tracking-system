@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: stock-tracking-system-db
+    ports:
+      - "5432:5432"
+    networks:
+      - stock-tracking-system-network
+    volumes:
+      - ./docker/postgres/initDb.sql:/docker-entrypoint-initdb.d/initDb.sql
+    environment:
+      POSTGRES_DB: stock-tracking-system-db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+    stock-tracking-system-network:
+      driver: bridge
