@@ -6,6 +6,7 @@ import com.onuraktas.stocktrackingsystem.dto.request.UpdateCategoryNameRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
+import com.onuraktas.stocktrackingsystem.exception.CategoryAlreadyExistsException;
 import com.onuraktas.stocktrackingsystem.mapper.CategoryMapper;
 import com.onuraktas.stocktrackingsystem.message.CategoryMessages;
 import com.onuraktas.stocktrackingsystem.repository.CategoryRepository;
@@ -27,11 +28,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CreateCategoryResponse createCategory(CreateCategoryRequest categoryRequest) {
+        this.checkCategoryNameExists(categoryRequest.getCategoryName());
+
         Category category = this.categoryRepository.save(CategoryMapper.toEntity(categoryRequest));
         CreateCategoryResponse createCategoryResponse = CategoryMapper.toCreateCategoryResponse(category);
         createCategoryResponse.setStatus(Status.OK.getStatus());
 
         return createCategoryResponse;
+    }
+
+    private void checkCategoryNameExists(String categoryName) {
+        Category existCategory = categoryRepository.findByCategoryName(categoryName);
+
+        if (Objects.nonNull(existCategory))
+            throw new CategoryAlreadyExistsException(CategoryMessages.CATEGORY_ALREADY_EXIST);
     }
 
     @Override

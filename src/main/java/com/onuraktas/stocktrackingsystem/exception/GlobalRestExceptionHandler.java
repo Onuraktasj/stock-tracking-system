@@ -11,11 +11,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalRestExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponse> productNotFoundException(final Exception exception){
+    public ResponseEntity<ErrorResponse> productNotFoundException(final ProductNotFoundException exception){
         var customRestError = ErrorResponse.builder()
                 .message(exception.getMessage())
                 .build();
-        return responseEntity(HttpStatus.NOT_FOUND,customRestError);
+        return responseEntity(HttpStatus.NOT_FOUND, customRestError);
+    }
+
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> categoryAlreadyExistsException(final CategoryAlreadyExistsException exception){
+        var customRestError = ErrorResponse.builder()
+                .message(exception.getMessage())
+                .build();
+        return responseEntity(HttpStatus.NOT_ACCEPTABLE, customRestError);
     }
 
     private static ResponseEntity<ErrorResponse> responseEntity(HttpStatus httpStatus, ErrorResponse errorResponse){

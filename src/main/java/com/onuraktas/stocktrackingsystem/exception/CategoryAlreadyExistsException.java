@@ -1,10 +1,10 @@
 package com.onuraktas.stocktrackingsystem.exception;
 
-public class ProductNotFoundException extends RuntimeException{
+public class CategoryAlreadyExistsException extends RuntimeException{
 
     private final String message;
 
-    public ProductNotFoundException(String message){
+    public CategoryAlreadyExistsException(String message){
         this.message = message;
     }
 
