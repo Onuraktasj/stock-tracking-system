@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalRestExceptionHandler {
 
-    @ExceptionHandler({ProductNotFoundException.class, SupplierNotFoundException.class})
+    @ExceptionHandler({
+            AppUserNotFoundException.class,
+            ProductNotFoundException.class,
+            SupplierNotFoundException.class
+    })
     public ResponseEntity<ErrorResponse> productNotFoundException(final Exception exception){
         var customRestError = ErrorResponse.builder()
                 .message(exception.getMessage())

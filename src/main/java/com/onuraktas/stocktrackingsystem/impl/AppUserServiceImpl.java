@@ -6,6 +6,7 @@ import com.onuraktas.stocktrackingsystem.dto.request.UpdateAppUserContactInfoReq
 import com.onuraktas.stocktrackingsystem.dto.response.CreateAppUserResponse;
 import com.onuraktas.stocktrackingsystem.entity.AppUser;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
+import com.onuraktas.stocktrackingsystem.exception.AppUserNotFoundException;
 import com.onuraktas.stocktrackingsystem.mapper.AppUserMapper;
 import com.onuraktas.stocktrackingsystem.message.AppUserMessages;
 import com.onuraktas.stocktrackingsystem.repository.AppUserRepository;
@@ -39,17 +40,22 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public List<AppUserDto> getAllActiveAppUsers() {
-        return AppUserMapper.toDtoList(this.appUserRepository.findAllByStatus(Boolean.TRUE));
+        List<AppUserDto> appUserDtoList = AppUserMapper.toDtoList(this.appUserRepository.findAllByStatus(Boolean.TRUE));
+
+        if (appUserDtoList.isEmpty())
+            throw new AppUserNotFoundException(AppUserMessages.USER_NOT_FOUND);
+
+        return appUserDtoList;
     }
 
     @Override
     public ResponseEntity<AppUserDto> updateAppUserById(UUID appUserId, AppUserDto appUserDto) {
-        if (!AppUserUtils.validateUsersRequest(appUserId, appUserDto.getAppUserId()))
+        if (Boolean.FALSE.equals(AppUserUtils.validateUsersRequest(appUserId, appUserDto.getAppUserId())))
             return ResponseEntity.badRequest().build();
 
         Optional<AppUser> existUsers = appUserRepository.findById(appUserId);
         if (existUsers.isEmpty())
-            return ResponseEntity.notFound().build();
+            throw new AppUserNotFoundException(AppUserMessages.USER_NOT_FOUND);
 
         final AppUserDto updateUsers = this.save(appUserDto);
 
@@ -62,14 +68,14 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public AppUserDto updateAppUserNameById(UUID appUserId, String name) {
-        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()-> new NoSuchElementException(AppUserMessages.USER_NOT_FOUND));
+        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()-> new AppUserNotFoundException(AppUserMessages.USER_NOT_FOUND));
         appUser.setName(name);
         return AppUserMapper.toDto(appUserRepository.save(appUser));
     }
 
     @Override
     public AppUserDto updateAppUserContactInfoById(UUID appUserId, UpdateAppUserContactInfoRequest request) {
-        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()-> new NoSuchElementException(AppUserMessages.USER_NOT_FOUND));
+        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()-> new AppUserNotFoundException(AppUserMessages.USER_NOT_FOUND));
         appUser.setPhone(request.getPhone());
         appUser.setEmail(request.getEmail());
         appUserRepository.save(appUser);
@@ -78,7 +84,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public void deleteAppUserById(UUID appUserId) {
-        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()-> new NoSuchElementException(AppUserMessages.USER_NOT_FOUND));
+        AppUser appUser = appUserRepository.findById(appUserId).orElseThrow(()-> new AppUserNotFoundException(AppUserMessages.USER_NOT_FOUND));
         appUser.setStatus(false);
         appUserRepository.save(appUser);
     }
