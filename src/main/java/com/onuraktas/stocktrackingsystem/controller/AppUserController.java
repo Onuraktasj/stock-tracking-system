@@ -4,6 +4,7 @@ import com.onuraktas.stocktrackingsystem.dto.entity.AppUserDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateAppUserRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateAppUserContactInfoRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateAppUserResponse;
+import com.onuraktas.stocktrackingsystem.message.AppUserMessages;
 import com.onuraktas.stocktrackingsystem.service.AppUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/user")
 public class AppUserController {
 
     private final AppUserService appUserService;
@@ -21,7 +22,7 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
-        @PostMapping(value ="/crate")
+        @PostMapping(value ="/create")
     public ResponseEntity<CreateAppUserResponse> createAppUser(@RequestBody CreateAppUserRequest createAppUserRequest){
         return ResponseEntity.ok(appUserService.createAppUser(createAppUserRequest));
     }
@@ -49,6 +50,6 @@ public class AppUserController {
         @DeleteMapping("/{appUserId}")
     public ResponseEntity<String> deleteAppUserById(@PathVariable(value = "appUserId") UUID appUserId){
         appUserService.deleteAppUserById(appUserId);
-        return ResponseEntity.ok("Users Delete Successfully!");
+        return ResponseEntity.ok(AppUserMessages.USER_DELETED);
     }
 }
