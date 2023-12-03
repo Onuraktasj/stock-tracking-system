@@ -19,6 +19,35 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  app:
+    image: stock-tracking-system-app:latest
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    networks:
+      - stock-tracking-system-network
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/stock-tracking-system-db?currentSchema=stock-tracking-system
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATASOURCE_HIKARI_SCHEMA: stock-tracking-system
+      SPRING_DATASOURCE_HIKARI_POOL_NAME: StockTrackingSystemJPAHikariCP
+      SPRING_FLYWAY_URL: jdbc:postgresql://db:5432/stock-tracking-system-db
+      SPRING_FLYWAY_USER: admin
+      SPRING_FLYWAY_PASSWORD: admin
+      SPRING_FLYWAY_SCHEMAS: stock-tracking-system
+
 
 networks:
     stock-tracking-system-network:
