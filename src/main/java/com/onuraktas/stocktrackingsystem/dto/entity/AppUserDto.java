@@ -14,9 +14,9 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class UsersDto {
+public class AppUserDto {
 
-    private UUID usersId;
+    private UUID appUserId;
 
     private String name;
 

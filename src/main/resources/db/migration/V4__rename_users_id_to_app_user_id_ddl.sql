@@ -1,0 +1,1 @@
+alter table app_user rename column users_id to app_user_id;

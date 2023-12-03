@@ -1,0 +1,1 @@
+alter table appUser rename to app_user;

@@ -14,11 +14,11 @@ import java.util.UUID;
 @ToString
 @Builder
 @Entity
-public class Users {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID usersId;
+    private UUID appUserId;
 
     private String name;
 

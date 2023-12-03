@@ -25,7 +25,7 @@ create table if not exists supplier
 );
 
 
-create table if not exists users
+create table if not exists appUser
 (
     users_id uuid primary key default gen_random_uuid(),
     name varchar(255),
