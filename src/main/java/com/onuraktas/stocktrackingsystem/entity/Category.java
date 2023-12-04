@@ -19,9 +19,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID categoryId;
-
     private String categoryName;
-
-    private UUID productId;
-
+    @Builder.Default
+    private Boolean isActive = true;
 }

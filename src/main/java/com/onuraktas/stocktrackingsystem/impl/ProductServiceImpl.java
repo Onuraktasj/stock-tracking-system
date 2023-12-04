@@ -4,10 +4,13 @@ import com.onuraktas.stocktrackingsystem.dto.entity.ProductDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateProductRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateProductAmountRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateProductResponse;
+import com.onuraktas.stocktrackingsystem.entity.CategoryProductRel;
 import com.onuraktas.stocktrackingsystem.entity.Product;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
+import com.onuraktas.stocktrackingsystem.exception.ProductNotFoundException;
 import com.onuraktas.stocktrackingsystem.mapper.ProductMapper;
 import com.onuraktas.stocktrackingsystem.message.ProductMessages;
+import com.onuraktas.stocktrackingsystem.repository.CategoryProductRelRepository;
 import com.onuraktas.stocktrackingsystem.repository.ProductRepository;
 import com.onuraktas.stocktrackingsystem.service.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +22,11 @@ import java.util.*;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryProductRelRepository categoryProductRelRepository;
 
-    public ProductServiceImpl (ProductRepository productRepository){
+    public ProductServiceImpl (ProductRepository productRepository, CategoryProductRelRepository categoryProductRelRepository){
         this.productRepository = productRepository;
+        this.categoryProductRelRepository = categoryProductRelRepository;
     }
 
     @Override
@@ -75,6 +80,22 @@ public class ProductServiceImpl implements ProductService {
         productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException(ProductMessages.PRODUCT_NOT_FOUND));
         productRepository.deleteById(productId);
 
+    }
+
+    @Override
+    public List<ProductDto> getProductListByCategory(UUID categoryId) {
+
+        List<UUID> productIdList = this.categoryProductRelRepository.findAllByCategoryIdAndIsActive(categoryId, Boolean.TRUE).stream().map(CategoryProductRel::getProductId).toList();
+
+        if (productIdList.isEmpty())
+            throw new ProductNotFoundException(ProductMessages.PRODUCT_NOT_FOUND);
+
+        List<ProductDto> productDtoList = ProductMapper.toDtoList(this.productRepository.findAllByProductIdIn(productIdList));
+
+        if (productDtoList.isEmpty())
+            throw new ProductNotFoundException(ProductMessages.PRODUCT_NOT_FOUND);
+
+        return productDtoList;
     }
 
     private ProductDto save (ProductDto productDto){

@@ -11,11 +11,11 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class ProductDto {
+public class CategoryProductRelDto {
 
+    private UUID id;
+    private UUID categoryId;
     private UUID productId;
-    private String productName;
-    private String description;
-    private Integer amount;
     private Boolean isActive;
 }
+

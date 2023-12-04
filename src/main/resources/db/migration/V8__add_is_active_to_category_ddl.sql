@@ -1,0 +1,1 @@
+alter table category add column is_active boolean default true;

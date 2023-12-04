@@ -19,6 +19,7 @@ public class CategoryMapper {
         return CategoryDto.builder()
                 .categoryId(category.getCategoryId())
                 .categoryName(category.getCategoryName())
+                .isActive(category.getIsActive())
                 .build();
     }
 
@@ -28,6 +29,7 @@ public class CategoryMapper {
         return CategoryDto.builder()
                 .categoryId(category.getCategoryId())
                 .categoryName(category.getCategoryName())
+                .isActive(category.getIsActive())
                 .build();
     }
 

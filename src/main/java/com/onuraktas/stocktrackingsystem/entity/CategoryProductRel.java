@@ -1,27 +1,28 @@
 package com.onuraktas.stocktrackingsystem.entity;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 
 import java.util.UUID;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @EqualsAndHashCode
-@Builder
 @ToString
+@Builder
 @Entity
-public class Product {
+public class CategoryProductRel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    private UUID categoryId;
     private UUID productId;
-    private String productName;
-    private String description;
-    private Integer amount;
     @Builder.Default
     private Boolean isActive = true;
 }
