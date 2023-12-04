@@ -53,5 +53,10 @@ public class ProductController {
         return ResponseEntity.ok("Product Delete Successfully!");
     }
 
+    @GetMapping(value = "/getByCategory/{categoryId}")
+    public ResponseEntity<List<ProductDto>> getProductListByCategory(@PathVariable(value = "categoryId") UUID categoryId){
+        return ResponseEntity.ok(productService.getProductListByCategory(categoryId));
+    }
+
 
 }

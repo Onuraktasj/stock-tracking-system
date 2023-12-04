@@ -21,5 +21,5 @@ public interface ProductService {
 
     void deleteProduct(UUID productId);
 
-
+    List<ProductDto> getProductListByCategory(UUID categoryId);
 }

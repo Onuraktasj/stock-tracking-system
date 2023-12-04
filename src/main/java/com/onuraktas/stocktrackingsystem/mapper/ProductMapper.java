@@ -18,17 +18,7 @@ public class ProductMapper {
                 .productName(product.getProductName())
                 .description(product.getDescription())
                 .amount(product.getAmount())
-                .build();
-    }
-
-    public static ProductDto toEntity(Product product){
-        if (Objects.isNull(product))
-            return null;
-        return ProductDto.builder()
-                .productId(product.getProductId())
-                .productName(product.getProductName())
-                .description(product.getDescription())
-                .amount(product.getAmount())
+                .isActive(product.getIsActive())
                 .build();
     }
 
