@@ -15,7 +15,7 @@ public class GlobalRestExceptionHandler {
             ProductNotFoundException.class,
             SupplierNotFoundException.class
     })
-    public ResponseEntity<ErrorResponse> productNotFoundException(final Exception exception){
+    public ResponseEntity<ErrorResponse> notFoundException(final Exception exception){
         var customRestError = ErrorResponse.builder()
                 .message(exception.getMessage())
                 .build();
@@ -28,6 +28,14 @@ public class GlobalRestExceptionHandler {
                 .message(exception.getMessage())
                 .build();
         return responseEntity(HttpStatus.NOT_ACCEPTABLE, customRestError);
+    }
+
+    @ExceptionHandler(ProductBadRequestException.class)
+    public ResponseEntity<ErrorResponse> badRequestException(final ProductBadRequestException exception){
+        var customRestError = ErrorResponse.builder()
+                .message(exception.getMessage())
+                .build();
+        return responseEntity(HttpStatus.BAD_REQUEST, customRestError);
     }
 
     private static ResponseEntity<ErrorResponse> responseEntity(HttpStatus httpStatus, ErrorResponse errorResponse){

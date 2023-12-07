@@ -1,6 +1,9 @@
 package com.onuraktas.stocktrackingsystem.dto.request;
 
+import com.onuraktas.stocktrackingsystem.dto.general.SimpleCategory;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,8 +15,7 @@ import lombok.*;
 public class CreateProductRequest {
 
     private String productName;
-
     private String description;
-
     private Integer amount;
+    private List<SimpleCategory> categoryList;
 }
