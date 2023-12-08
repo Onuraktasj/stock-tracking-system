@@ -5,6 +5,7 @@ import com.onuraktas.stocktrackingsystem.dto.general.SimpleCategory;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateProductRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateProductAmountRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateProductResponse;
+import com.onuraktas.stocktrackingsystem.dto.response.DeleteProductByIdResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
 import com.onuraktas.stocktrackingsystem.entity.CategoryProductRel;
 import com.onuraktas.stocktrackingsystem.entity.Product;
@@ -105,9 +106,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(UUID productId) {
-        productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException(ProductMessages.PRODUCT_NOT_FOUND));
-        productRepository.deleteById(productId);
+    public DeleteProductByIdResponse deleteProductById(UUID productId) {
+        Product deletedProduct = this.productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException(ProductMessages.PRODUCT_NOT_FOUND));
+        deletedProduct.setIsActive(Boolean.FALSE);
+        this.productRepository.save(deletedProduct);
+
+        return DeleteProductByIdResponse.builder().productId(productId).isActive(Boolean.FALSE).build();
+
 
     }
 
