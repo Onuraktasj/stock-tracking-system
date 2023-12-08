@@ -43,14 +43,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public CreateProductResponse createProduct(CreateProductRequest createProductRequest) {
 
-        if (Objects.isNull(createProductRequest))
-            throw new ProductBadRequestException(ExceptionMessages.BAD_REQUEST);
-
-        if (Objects.isNull(createProductRequest.getCategoryList()) || createProductRequest.getCategoryList().isEmpty())
-            throw new ProductBadRequestException(ProductMessages.CATEGORY_LIST_EMPTY);
-
-        if (createProductRequest.getCategoryList().size() > GeneralValues.CATEGORY_MAX_SIZE)
-            throw new ProductBadRequestException(ProductMessages.CATEGORY_LIST_SIZE_EXCEEDED);
+        this.validateCreateProductRequest(createProductRequest);
 
         List<Category> categoryList = this.categoryRepository.findAllByCategoryIdInAndIsActive(createProductRequest.getCategoryList().stream().map(SimpleCategory::getCategoryId).toList(), Boolean.TRUE);
 
@@ -138,5 +131,16 @@ public class ProductServiceImpl implements ProductService {
         Product product = ProductMapper.toEntity(productDto);
         product = productRepository.save(product);
         return ProductMapper.toDto(product);
+    }
+
+    private void validateCreateProductRequest(CreateProductRequest createProductRequest) {
+        if (Objects.isNull(createProductRequest))
+            throw new ProductBadRequestException(ExceptionMessages.BAD_REQUEST);
+
+        if (Objects.isNull(createProductRequest.getCategoryList()) || createProductRequest.getCategoryList().isEmpty())
+            throw new ProductBadRequestException(ProductMessages.CATEGORY_LIST_EMPTY);
+
+        if (createProductRequest.getCategoryList().size() > GeneralValues.CATEGORY_MAX_SIZE)
+            throw new ProductBadRequestException(ProductMessages.CATEGORY_LIST_SIZE_EXCEEDED);
     }
 }
