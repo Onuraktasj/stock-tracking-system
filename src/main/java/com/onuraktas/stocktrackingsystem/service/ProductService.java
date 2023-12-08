@@ -4,6 +4,7 @@ import com.onuraktas.stocktrackingsystem.dto.entity.ProductDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateProductRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateProductAmountRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateProductResponse;
+import com.onuraktas.stocktrackingsystem.dto.response.DeleteProductByIdResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface ProductService {
 
     ProductDto updateProductAmount(UUID productId, UpdateProductAmountRequest request);
 
-    void deleteProduct(UUID productId);
+    DeleteProductByIdResponse deleteProductById(UUID productId);
 
     List<ProductDto> getProductListByCategory(UUID categoryId);
 }

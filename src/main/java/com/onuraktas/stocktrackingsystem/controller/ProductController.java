@@ -4,6 +4,7 @@ import com.onuraktas.stocktrackingsystem.dto.entity.ProductDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateProductRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateProductAmountRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateProductResponse;
+import com.onuraktas.stocktrackingsystem.dto.response.DeleteProductByIdResponse;
 import com.onuraktas.stocktrackingsystem.service.ProductService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +49,8 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/{productId}")
-    public ResponseEntity<String> deleteProduct(@PathVariable(value = "productId") UUID productId){
-        productService.deleteProduct(productId);
-        return ResponseEntity.ok("Product Delete Successfully!");
+    public ResponseEntity<DeleteProductByIdResponse> deleteProductById(@PathVariable(value = "productId") UUID productId){
+        return ResponseEntity.ok(this.productService.deleteProductById(productId));
     }
 
     @GetMapping(value = "/getByCategory/{categoryId}")
