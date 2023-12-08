@@ -128,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
         if (productIdList.isEmpty())
             throw new ProductNotFoundException(ProductMessages.PRODUCT_NOT_FOUND);
 
-        List<ProductDto> productDtoList = ProductMapper.toDtoList(this.productRepository.findAllByProductIdIn(productIdList));
+        List<ProductDto> productDtoList = ProductMapper.toDtoList(this.productRepository.findAllByProductIdInAndIsActive(productIdList, Boolean.TRUE));
 
         if (productDtoList.isEmpty())
             throw new ProductNotFoundException(ProductMessages.PRODUCT_NOT_FOUND);
