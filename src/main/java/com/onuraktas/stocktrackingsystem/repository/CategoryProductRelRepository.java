@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface CategoryProductRelRepository extends JpaRepository<CategoryProductRel, UUID> {
 
     List<CategoryProductRel> findAllByCategoryIdAndIsActive(UUID categoryId, Boolean isActive);
+    List<CategoryProductRel> findAllByProductIdAndIsActive(UUID productId, Boolean isActive);
 }

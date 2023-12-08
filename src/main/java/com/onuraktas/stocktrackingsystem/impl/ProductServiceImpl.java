@@ -107,13 +107,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public DeleteProductByIdResponse deleteProductById(UUID productId) {
-        Product deletedProduct = this.productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException(ProductMessages.PRODUCT_NOT_FOUND));
+        Product deletedProduct = this.productRepository.findByProductIdAndIsActive(productId, Boolean.TRUE).orElseThrow(()-> new ProductNotFoundException(ProductMessages.PRODUCT_NOT_FOUND));
         deletedProduct.setIsActive(Boolean.FALSE);
         this.productRepository.save(deletedProduct);
 
+        List<CategoryProductRel> categoryProductRelList = this.categoryProductRelRepository.findAllByProductIdAndIsActive(productId, Boolean.TRUE);
+        categoryProductRelList.forEach(categoryProductRel -> {
+            categoryProductRel.setIsActive(Boolean.FALSE);
+        });
+        this.categoryProductRelRepository.saveAll(categoryProductRelList);
+
         return DeleteProductByIdResponse.builder().productId(productId).isActive(Boolean.FALSE).build();
-
-
     }
 
     @Override
