@@ -1,9 +1,12 @@
 package com.onuraktas.stocktrackingsystem.impl;
 
+import com.onuraktas.stocktrackingsystem.amqp.producer.CategoryProducer;
+import com.onuraktas.stocktrackingsystem.dto.amqp.DeletedCategoryMessage;
 import com.onuraktas.stocktrackingsystem.dto.entity.CategoryDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateCategoryRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateCategoryNameRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
+import com.onuraktas.stocktrackingsystem.dto.response.DeleteCategoryResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.exception.CategoryAlreadyExistsException;
@@ -21,9 +24,11 @@ import java.util.*;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryProducer categoryProducer;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository){
+    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryProducer categoryProducer){
         this.categoryRepository = categoryRepository;
+        this.categoryProducer = categoryProducer;
     }
 
     @Override
@@ -76,6 +81,17 @@ public class CategoryServiceImpl implements CategoryService {
         category.setCategoryName(request.getCategoryName());
         categoryRepository.save(category);
         return CategoryMapper.toDto(category);
+    }
+
+    @Override
+    public DeleteCategoryResponse deleteCategory(UUID categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new NoSuchElementException(CategoryMessages.CATEGORY_NOT_FOUND));
+        category.setIsActive(Boolean.FALSE);
+        categoryRepository.save(category);
+
+        this.categoryProducer.sendToQueue(DeletedCategoryMessage.builder().categoryId(categoryId).build());
+
+        return DeleteCategoryResponse.builder().categoryId(categoryId).build();
     }
 
     private CategoryDto save (CategoryDto categoryDto){

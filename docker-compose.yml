@@ -19,6 +19,22 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: stock-tracking-system-rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - stock-tracking-system-network
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   app:
     image: stock-tracking-system-app:latest
     platform: linux/amd64
@@ -34,8 +50,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     links:
       - db
+      - rabbitmq
     environment:
       SERVER_PORT: 8081
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/stock-tracking-system-db?currentSchema=stock-tracking-system
@@ -47,7 +66,10 @@ services:
       SPRING_FLYWAY_USER: admin
       SPRING_FLYWAY_PASSWORD: admin
       SPRING_FLYWAY_SCHEMAS: stock-tracking-system
-
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: admin
+      RABBITMQ_PASSWORD: admin
 
 networks:
     stock-tracking-system-network:

@@ -23,4 +23,6 @@ public interface ProductService {
     DeleteProductByIdResponse deleteProductById(UUID productId);
 
     List<ProductDto> getProductListByCategory(UUID categoryId);
+
+    void deleteProductListByProductListIdList(List<UUID> productIdList);
 }
