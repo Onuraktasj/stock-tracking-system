@@ -13,7 +13,8 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler({
             AppUserNotFoundException.class,
             ProductNotFoundException.class,
-            SupplierNotFoundException.class
+            SupplierNotFoundException.class,
+            CategoryNotFoundException.class,
     })
     public ResponseEntity<ErrorResponse> notFoundException(final Exception exception){
         var customRestError = ErrorResponse.builder()
