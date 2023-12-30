@@ -4,6 +4,7 @@ import com.onuraktas.stocktrackingsystem.dto.entity.CategoryDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateCategoryRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateCategoryNameRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
+import com.onuraktas.stocktrackingsystem.dto.response.DeleteCategoryResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -20,5 +21,5 @@ public interface CategoryService {
 
     CategoryDto updateCategoryName(UUID categoryId, UpdateCategoryNameRequest request);
 
-
+    DeleteCategoryResponse deleteCategory(UUID categoryId);
 }

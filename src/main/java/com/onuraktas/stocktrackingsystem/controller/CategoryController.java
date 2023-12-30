@@ -4,6 +4,7 @@ import com.onuraktas.stocktrackingsystem.dto.entity.CategoryDto;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateCategoryRequest;
 import com.onuraktas.stocktrackingsystem.dto.request.UpdateCategoryNameRequest;
 import com.onuraktas.stocktrackingsystem.dto.response.CreateCategoryResponse;
+import com.onuraktas.stocktrackingsystem.dto.response.DeleteCategoryResponse;
 import com.onuraktas.stocktrackingsystem.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,5 +46,10 @@ public class CategoryController {
     @PatchMapping(value = "/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategoryName(@PathVariable(value = "categoryId")UUID categoryId, @RequestBody UpdateCategoryNameRequest request){
         return ResponseEntity.ok(categoryService.updateCategoryName(categoryId,request));
+    }
+
+    @DeleteMapping(value = "/{categoryId}")
+    public ResponseEntity<DeleteCategoryResponse> deleteCategory(@PathVariable(value = "categoryId") UUID categoryId){
+        return ResponseEntity.accepted().body(categoryService.deleteCategory(categoryId));
     }
 }

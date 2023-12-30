@@ -136,6 +136,13 @@ public class ProductServiceImpl implements ProductService {
         return productDtoList;
     }
 
+    @Override
+    public void deleteProductListByProductListIdList(List<UUID> productIdList) {
+        List<Product> productList = this.productRepository.findAllByProductIdInAndIsActive(productIdList, Boolean.TRUE);
+        productList.forEach(product -> product.setIsActive(Boolean.FALSE));
+        this.productRepository.saveAll(productList);
+    }
+
     private ProductDto save (ProductDto productDto){
         Product product = ProductMapper.toEntity(productDto);
         product = productRepository.save(product);
