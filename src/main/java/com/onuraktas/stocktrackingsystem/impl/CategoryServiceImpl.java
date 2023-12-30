@@ -10,6 +10,7 @@ import com.onuraktas.stocktrackingsystem.dto.response.DeleteCategoryResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.exception.CategoryAlreadyExistsException;
+import com.onuraktas.stocktrackingsystem.exception.CategoryNotFoundException;
 import com.onuraktas.stocktrackingsystem.mapper.CategoryMapper;
 import com.onuraktas.stocktrackingsystem.message.CategoryMessages;
 import com.onuraktas.stocktrackingsystem.repository.CategoryRepository;
@@ -85,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public DeleteCategoryResponse deleteCategory(UUID categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new NoSuchElementException(CategoryMessages.CATEGORY_NOT_FOUND));
+        Category category = categoryRepository.findByCategoryIdAndIsActive(categoryId, Boolean.TRUE).orElseThrow(()-> new CategoryNotFoundException(CategoryMessages.CATEGORY_NOT_FOUND));
         category.setIsActive(Boolean.FALSE);
         categoryRepository.save(category);
 
