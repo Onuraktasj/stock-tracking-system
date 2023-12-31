@@ -5,5 +5,5 @@ import java.util.UUID;
 
 public interface CategoryProductRelService {
 
-    List<UUID> deleteCategoryProductRelByCategoryId(UUID categoryId);
+    void deleteCategoryProductRelByCategoryId(UUID categoryId);
 }

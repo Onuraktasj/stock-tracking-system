@@ -1,4 +1,4 @@
-package com.onuraktas.stocktrackingsystem.contant;
+package com.onuraktas.stocktrackingsystem.constant;
 
 public class QueueName {
 

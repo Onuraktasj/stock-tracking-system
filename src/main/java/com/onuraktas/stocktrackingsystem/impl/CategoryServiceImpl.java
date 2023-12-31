@@ -10,11 +10,11 @@ import com.onuraktas.stocktrackingsystem.dto.response.DeleteCategoryResponse;
 import com.onuraktas.stocktrackingsystem.entity.Category;
 import com.onuraktas.stocktrackingsystem.entity.enums.Status;
 import com.onuraktas.stocktrackingsystem.exception.CategoryAlreadyExistsException;
+import com.onuraktas.stocktrackingsystem.exception.CategoryBadRequestException;
 import com.onuraktas.stocktrackingsystem.exception.CategoryNotFoundException;
 import com.onuraktas.stocktrackingsystem.mapper.CategoryMapper;
 import com.onuraktas.stocktrackingsystem.message.CategoryMessages;
 import com.onuraktas.stocktrackingsystem.repository.CategoryRepository;
-import com.onuraktas.stocktrackingsystem.repository.ProductRepository;
 import com.onuraktas.stocktrackingsystem.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -61,26 +61,31 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<CategoryDto> updateCategory(UUID categoryId, CategoryDto categoryDto) {
+    public CategoryDto updateCategory(UUID categoryId, CategoryDto categoryDto) {
         if (Objects.isNull(categoryId) || Objects.isNull(categoryDto.getCategoryId()) || !Objects.equals(categoryId,categoryDto.getCategoryId()))
-            return ResponseEntity.badRequest().build();
+            throw new CategoryBadRequestException(CategoryMessages.CATEGORY_ID_NOT_MATCH);
 
-        Optional<Category> existCategory = categoryRepository.findById(categoryId);
-        if (existCategory.isEmpty())
-            return ResponseEntity.notFound().build();
+        Category existingCategory = this.categoryRepository.findByCategoryIdAndIsActive(categoryId, Boolean.TRUE).orElseThrow(()-> new CategoryNotFoundException(CategoryMessages.CATEGORY_NOT_FOUND));
 
-        final CategoryDto updateCategory = this.save(categoryDto);
-        if (Objects.nonNull(updateCategory))
-            return ResponseEntity.ok(updateCategory);
+        existingCategory.setCategoryName(categoryDto.getCategoryName());
+        existingCategory.setIsActive(categoryDto.getIsActive());
 
-        return ResponseEntity.internalServerError().build();
+        this.categoryRepository.save(existingCategory);
+
+        return CategoryMapper.toDto(existingCategory);
     }
 
     @Override
-    public CategoryDto updateCategoryName(UUID categoryId, UpdateCategoryNameRequest request) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new NoSuchElementException(CategoryMessages.CATEGORY_NOT_FOUND));
+    public CategoryDto updateCategory(UUID categoryId, UpdateCategoryNameRequest request) {
+
+        if (Objects.isNull(request.getCategoryName()))
+            throw new CategoryBadRequestException(CategoryMessages.CATEGORY_NAME_CANNOT_BE_NULL);
+
+        Category category = this.categoryRepository.findByCategoryIdAndIsActive(categoryId, Boolean.TRUE).orElseThrow(()-> new CategoryNotFoundException(CategoryMessages.CATEGORY_NOT_FOUND));
         category.setCategoryName(request.getCategoryName());
+
         categoryRepository.save(category);
+
         return CategoryMapper.toDto(category);
     }
 
@@ -93,11 +98,5 @@ public class CategoryServiceImpl implements CategoryService {
         this.categoryProducer.sendToQueue(DeletedCategoryMessage.builder().categoryId(categoryId).build());
 
         return DeleteCategoryResponse.builder().categoryId(categoryId).build();
-    }
-
-    private CategoryDto save (CategoryDto categoryDto){
-        Category category = CategoryMapper.toEntity(categoryDto);
-        category = categoryRepository.save(category);
-        return CategoryMapper.toDto(category);
     }
 }

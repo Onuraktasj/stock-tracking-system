@@ -18,11 +18,9 @@ public class CategoryProductRelServiceImpl implements CategoryProductRelService 
     }
 
     @Override
-    public List<UUID> deleteCategoryProductRelByCategoryId(UUID categoryId) {
+    public void deleteCategoryProductRelByCategoryId(UUID categoryId) {
         List<CategoryProductRel> categoryProductRelList = categoryProductRelRepository.findAllByCategoryIdAndIsActive(categoryId, Boolean.TRUE);
         categoryProductRelList.forEach(categoryProductRel -> categoryProductRel.setIsActive(Boolean.FALSE));
         categoryProductRelRepository.saveAll(categoryProductRelList);
-
-        return categoryProductRelList.stream().map(CategoryProductRel::getProductId).toList();
     }
 }
