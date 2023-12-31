@@ -12,4 +12,5 @@ public interface CategoryProductRelRepository extends JpaRepository<CategoryProd
 
     List<CategoryProductRel> findAllByCategoryIdAndIsActive(UUID categoryId, Boolean isActive);
     List<CategoryProductRel> findAllByProductIdAndIsActive(UUID productId, Boolean isActive);
+    List<CategoryProductRel> findAllByProductIdInAndIsActive(List<UUID> productIdList, Boolean isActive);
 }

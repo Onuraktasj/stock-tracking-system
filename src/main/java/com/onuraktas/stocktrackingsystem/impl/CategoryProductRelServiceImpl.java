@@ -23,4 +23,11 @@ public class CategoryProductRelServiceImpl implements CategoryProductRelService 
         categoryProductRelList.forEach(categoryProductRel -> categoryProductRel.setIsActive(Boolean.FALSE));
         categoryProductRelRepository.saveAll(categoryProductRelList);
     }
+
+    @Override
+    public void deleteCategoryProductRelByProductId(List<UUID> productIdList) {
+        List<CategoryProductRel> categoryProductRelList = categoryProductRelRepository.findAllByProductIdInAndIsActive(productIdList, Boolean.TRUE);
+        categoryProductRelList.forEach(categoryProductRel -> categoryProductRel.setIsActive(Boolean.FALSE));
+        categoryProductRelRepository.saveAll(categoryProductRelList);
+    }
 }

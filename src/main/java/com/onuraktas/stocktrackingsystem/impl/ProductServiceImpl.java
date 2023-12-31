@@ -1,5 +1,8 @@
 package com.onuraktas.stocktrackingsystem.impl;
 
+import com.onuraktas.stocktrackingsystem.amqp.producer.ProductProducer;
+import com.onuraktas.stocktrackingsystem.constant.QueueName;
+import com.onuraktas.stocktrackingsystem.dto.amqp.DeletedProductMessage;
 import com.onuraktas.stocktrackingsystem.dto.entity.ProductDto;
 import com.onuraktas.stocktrackingsystem.dto.general.SimpleCategory;
 import com.onuraktas.stocktrackingsystem.dto.request.CreateProductRequest;
@@ -33,11 +36,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryProductRelRepository categoryProductRelRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductProducer productProducer;
 
-    public ProductServiceImpl (ProductRepository productRepository, CategoryProductRelRepository categoryProductRelRepository, CategoryRepository categoryRepository){
+    public ProductServiceImpl (ProductRepository productRepository, CategoryProductRelRepository categoryProductRelRepository, CategoryRepository categoryRepository, ProductProducer productProducer){
         this.productRepository = productRepository;
         this.categoryProductRelRepository = categoryProductRelRepository;
         this.categoryRepository = categoryRepository;
+        this.productProducer = productProducer;
     }
 
     @Override
@@ -141,6 +146,11 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = this.productRepository.findAllByProductIdInAndIsActive(productIdList, Boolean.TRUE);
         productList.forEach(product -> product.setIsActive(Boolean.FALSE));
         this.productRepository.saveAll(productList);
+
+        List<DeletedProductMessage> deletedProductMessageList = new ArrayList<>();
+        productList.stream().map(Product::getProductId).forEach(productId -> deletedProductMessageList.add(DeletedProductMessage.builder().productId(productId).build()));
+
+        this.productProducer.sendToQueue(QueueName.DELETED_PRODUCT_QUEUE, deletedProductMessageList);
     }
 
     private ProductDto save (ProductDto productDto){
