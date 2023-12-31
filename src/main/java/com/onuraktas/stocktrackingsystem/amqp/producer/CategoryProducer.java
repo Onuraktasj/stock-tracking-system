@@ -1,6 +1,6 @@
 package com.onuraktas.stocktrackingsystem.amqp.producer;
 
-import com.onuraktas.stocktrackingsystem.contant.QueueName;
+import com.onuraktas.stocktrackingsystem.constant.QueueName;
 import com.onuraktas.stocktrackingsystem.dto.amqp.DeletedCategoryMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
