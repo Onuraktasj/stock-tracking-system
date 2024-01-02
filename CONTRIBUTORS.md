@@ -2,7 +2,7 @@ Below you can find the names of the contributors to this project;
 
 - [Onur Aktaş][onur-aktas-github]
 - [Evren Tan][evren-tan-github]
-- [Mert Bahardoğan] [mert-bahardogan-github]
+- [Mert Bahardoğan][mert-bahardogan-github]
 
 
 
