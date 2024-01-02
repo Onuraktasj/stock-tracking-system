@@ -2,6 +2,7 @@ Below you can find the names of the contributors to this project;
 
 - [Onur Aktaş][onur-aktas-github]
 - [Evren Tan][evren-tan-github]
+- [Mert Bahardoğan] [mert-bahardogan-github]
 
 
 
@@ -10,3 +11,4 @@ Below you can find the names of the contributors to this project;
 
 [evren-tan-github]: https://github.com/evrentan
 [onur-aktas-github]: https://github.com/Onuraktasj
+[mert-bahardogan-github]: https://github.com/mertbahardogan
