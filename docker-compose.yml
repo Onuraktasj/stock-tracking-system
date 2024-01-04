@@ -35,6 +35,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  redis:
+    image: redis:latest
+    container_name: stock-tracking-system-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - stock-tracking-system-network
+    environment:
+      REDIS_PASSWORD: admin
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   app:
     image: stock-tracking-system-app:latest
     platform: linux/amd64
@@ -70,6 +84,9 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: admin
       RABBITMQ_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: admin
 
 networks:
     stock-tracking-system-network:

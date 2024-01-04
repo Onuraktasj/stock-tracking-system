@@ -16,10 +16,15 @@ import com.onuraktas.stocktrackingsystem.mapper.CategoryMapper;
 import com.onuraktas.stocktrackingsystem.message.CategoryMessages;
 import com.onuraktas.stocktrackingsystem.repository.CategoryRepository;
 import com.onuraktas.stocktrackingsystem.service.CategoryService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -56,11 +61,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(value = "categoryCache", key = "'category_' + #categoryId")
     public CategoryDto getCategory(UUID categoryId) {
-        return CategoryMapper.toDto(this.categoryRepository.findById(categoryId).orElseThrow(() -> new NoSuchElementException(CategoryMessages.CATEGORY_NOT_FOUND)));
+        return CategoryMapper.toDto(this.categoryRepository.findByCategoryIdAndIsActive(categoryId, Boolean.TRUE).orElseThrow(() -> new NoSuchElementException(CategoryMessages.CATEGORY_NOT_FOUND)));
     }
 
     @Override
+    @CachePut(value = "categoryCache", key = "'category_' + #categoryId")
     public CategoryDto updateCategory(UUID categoryId, CategoryDto categoryDto) {
         if (Objects.isNull(categoryId) || Objects.isNull(categoryDto.getCategoryId()) || !Objects.equals(categoryId,categoryDto.getCategoryId()))
             throw new CategoryBadRequestException(CategoryMessages.CATEGORY_ID_NOT_MATCH);
@@ -76,6 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @CachePut(value = "categoryCache", key = "'category_' + #categoryId")
     public CategoryDto updateCategory(UUID categoryId, UpdateCategoryNameRequest request) {
 
         if (Objects.isNull(request.getCategoryName()))
@@ -90,6 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @CacheEvict(value = "categoryCache", key = "'category_' + #categoryId")
     public DeleteCategoryResponse deleteCategory(UUID categoryId) {
         Category category = categoryRepository.findByCategoryIdAndIsActive(categoryId, Boolean.TRUE).orElseThrow(()-> new CategoryNotFoundException(CategoryMessages.CATEGORY_NOT_FOUND));
         category.setIsActive(Boolean.FALSE);
