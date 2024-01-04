@@ -1,5 +1,6 @@
 package com.onuraktas.stocktrackingsystem.spring.spring;
 
+import com.onuraktas.stocktrackingsystem.spring.config.CacheConfig;
 import com.onuraktas.stocktrackingsystem.spring.config.CommonConfig;
 import com.onuraktas.stocktrackingsystem.spring.config.TransactionManagementConfig;
 import com.onuraktas.stocktrackingsystem.spring.config.WebConfig;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @Import(
 		value = {
+				CacheConfig.class,
 				CommonConfig.class,
 				TransactionManagementConfig.class,
 				WebConfig.class
