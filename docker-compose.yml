@@ -66,9 +66,12 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     links:
       - db
       - rabbitmq
+      - redis
     environment:
       SERVER_PORT: 8081
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/stock-tracking-system-db?currentSchema=stock-tracking-system
