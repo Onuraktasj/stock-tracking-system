@@ -16,6 +16,7 @@ import com.onuraktas.stocktrackingsystem.mapper.CategoryMapper;
 import com.onuraktas.stocktrackingsystem.message.CategoryMessages;
 import com.onuraktas.stocktrackingsystem.repository.CategoryRepository;
 import com.onuraktas.stocktrackingsystem.service.CategoryService;
+import com.onuraktas.stocktrackingsystem.redis.CategoryCacheImpl;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,10 +32,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryProducer categoryProducer;
+    private final CategoryCacheImpl categoryCacheImpl;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryProducer categoryProducer){
+    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryProducer categoryProducer, CategoryCacheImpl categoryCacheImpl){
         this.categoryRepository = categoryRepository;
         this.categoryProducer = categoryProducer;
+        this.categoryCacheImpl = categoryCacheImpl;
     }
 
     @Override
