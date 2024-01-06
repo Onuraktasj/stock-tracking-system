@@ -1,6 +1,18 @@
 version: "3.9"
 
 services:
+  service-discovery-server:
+    image: evrentan/service-discovery-server:main
+    container_name: service-discovery-server
+    ports:
+      - "6969:6969"
+    networks:
+      - stock-tracking-system-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:6969" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   db:
     image: postgres:latest
     container_name: stock-tracking-system-db
@@ -68,10 +80,13 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      service-discovery-server:
+        condition: service_healthy
     links:
       - db
       - rabbitmq
       - redis
+      - service-discovery-server
     environment:
       SERVER_PORT: 8081
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/stock-tracking-system-db?currentSchema=stock-tracking-system
@@ -90,6 +105,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: admin
+      SERVICE_DISCOVERY_SERVER_HOST: service-discovery-server
 
 networks:
     stock-tracking-system-network:
