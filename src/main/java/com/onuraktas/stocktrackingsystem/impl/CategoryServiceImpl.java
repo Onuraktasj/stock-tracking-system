@@ -41,10 +41,10 @@ public class CategoryServiceImpl implements CategoryService {
     public CreateCategoryResponse createCategory(CreateCategoryRequest categoryRequest) {
         this.checkCategoryNameExists(categoryRequest.getCategoryName());
 
-        Category category = this.categoryRepository.save(CategoryMapper.toEntity(categoryRequest));
+        Category category = this.categoryRepository.save(
+                Objects.requireNonNull(CategoryMapper.toEntity(categoryRequest)));
         CreateCategoryResponse createCategoryResponse = CategoryMapper.toCreateCategoryResponse(category);
         createCategoryResponse.setStatus(Status.OK.getStatus());
-
         return createCategoryResponse;
     }
 
