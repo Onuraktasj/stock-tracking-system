@@ -83,7 +83,7 @@ class CategoryServiceImplTest {
 
     private CreateCategoryRequest createMockCategoryRequest() {
         return new CreateCategoryRequest()
-                .builder().categoryName("A").build());
+                .builder().categoryName("A").build();
     }
 }
 
